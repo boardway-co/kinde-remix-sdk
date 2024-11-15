@@ -239,7 +239,19 @@ export const getKindeSession = async (request) => {
     }
   };
 
-  const headers = await refreshTokens();
+  const refreshTokensIfNecessary = async () => {
+    try {
+      await getToken();
+      return generateCookieHeader(request, cookies);
+    } catch (error) {
+      if (config.isDebugMode) {
+        console.debug(error);
+      }
+      return new Headers();
+    }
+  };
+
+  const headers = await refreshTokensIfNecessary();
 
   return {
     headers,
