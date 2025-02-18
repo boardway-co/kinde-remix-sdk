@@ -228,7 +228,7 @@ export const getKindeSession = async (request) => {
 
   const refreshTokens = async () => {
     try {
-      await kindeClient.refreshTokens(sessionManager);
+      await getToken();
       const headers = generateCookieHeader(request, cookies);
       return headers;
     } catch (error) {
@@ -239,19 +239,7 @@ export const getKindeSession = async (request) => {
     }
   };
 
-  const refreshTokensIfNecessary = async () => {
-    try {
-      await getToken();
-      return generateCookieHeader(request, cookies);
-    } catch (error) {
-      if (config.isDebugMode) {
-        console.debug(error);
-      }
-      return new Headers();
-    }
-  };
-
-  const headers = await refreshTokensIfNecessary();
+  const headers = await refreshTokens();
 
   return {
     headers,
